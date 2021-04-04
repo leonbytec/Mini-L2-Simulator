@@ -31,3 +31,13 @@ class Ledger:
         account = self.accounts.setdefault(address, Account(address=address))
         account.balance -= amount
 
+    def transfer(self, sender: str, recipient: str, amount: int) -> None:
+        """
+        Move funds between two accounts on the same ledger.
+
+        This is a thin wrapper around debit/credit that keeps the order
+        consistent across the codebase.
+        """
+        self.debit(sender, amount)
+        self.credit(recipient, amount)
+
