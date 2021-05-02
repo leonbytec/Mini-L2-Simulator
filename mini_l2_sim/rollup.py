@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Dict
+from typing import List
 
 from .ledger import Ledger
 
@@ -56,13 +56,16 @@ class RollupNode:
         self.mempool.clear()
         for tx in txs:
             self._apply_tx(tx, self.l2_ledger)
-        record = L1Record(block_index=block_index, state_root=simple_state_root(self.l2_ledger))
+        record = L1Record(
+            block_index=block_index,
+            state_root=simple_state_root(self.l2_ledger),
+        )
         self.l1_records.append(record)
         return L2Block(index=block_index, transactions=txs)
 
-    def post_block_to_l1(self, block: L2Block) -> L1Record:
-        # In this simplified version, posting is the same as applying
-        # the mempool and recording the state root.
-        del block  # kept for now to show the intended API shape
-        raise NotImplementedError("explicit posting is not wired yet")
+    def latest_state_root(self) -> str:
+        """
+        Convenience accessor for the current state root of the L2 ledger.
+        """
+        return simple_state_root(self.l2_ledger)
 
